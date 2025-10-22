@@ -1,72 +1,133 @@
 # Obsidian MCP Extended
 
-An extended version of [obsidian-mcp](https://github.com/punkpeye/obsidian-mcp) with advanced features for backlinks, tag management, smart content insertion, and statistics - while maintaining filesystem-based performance.
+A comprehensive MCP server for Obsidian with **45 tools** across **hybrid filesystem-native and API-based** architectures. Extends [obsidian-mcp](https://github.com/punkpeye/obsidian-mcp) with advanced plugin control, backlinks, tag management, and analytics.
 
 > **Note**: This project extends the base `obsidian-mcp` server. The original README is preserved as [README.upstream.md](README.upstream.md).
 
-## Why This Extension?
+## 🌟 Features
 
-Combines the best of both worlds:
-- **Performance**: Direct filesystem access with SQLite indexing (90% less memory, 60x faster searches)
-- **Features**: Advanced capabilities like backlinks, tag management, smart insertion, and statistics
-- **Simplicity**: No Obsidian plugins required, works offline, instant startup
+### Hybrid Architecture
 
-## New Features
+**Filesystem-Native Tools (33 tools)** - Work completely offline, no Obsidian required:
+- ✅ Direct file access for maximum performance
+- ✅ Zero Obsidian plugins needed
+- ✅ Instant startup, minimal memory
+- ✅ Full offline capability
 
-This extension adds **12 new filesystem-native MCP tools** across 4 feature categories:
+**API-Based Tools (12 tools)** - Enhanced features when Obsidian is running:
+- 🔌 Real-time workspace control
+- 🔌 Advanced plugin integration (Templater, Dataview DQL)
+- 🔌 Command palette access
+- 🔌 Requires [Local REST API plugin](https://github.com/coddingtonbear/obsidian-local-rest-api)
 
-### 🔗 Backlink Analysis (2 tools)
-- **`get_backlinks_fs_tool`**: Find all notes that link to a specific note
-  - Supports simple wikilinks (`[[note]]`)
-  - Supports aliased links (`[[note|alias]]`)
-  - Supports section references (`[[note#section]]`)
-- **`get_broken_links_fs_tool`**: Identify all broken wikilinks in your vault
-  - Scans entire vault for missing targets
-  - Returns source file, line number, and broken link
+---
 
-### 🏷️ Tag Management (4 tools)
-- **`analyze_note_tags_fs_tool`**: Extract both frontmatter and inline tags from notes
-  - Frontmatter tags (YAML list or string)
-  - Inline tags (`#tag` syntax)
-  - Nested tag support (`#project/active/critical`)
-- **`add_tag_fs_tool`**: Add tags to note frontmatter
-  - Creates frontmatter if missing
-  - Prevents duplicates
-- **`remove_tag_fs_tool`**: Remove tags from note frontmatter
-- **`search_by_tag_fs_tool`**: Find all notes containing a specific tag
-  - Searches both frontmatter and inline tags
-  - Returns tag locations for each note
+## 📦 Complete Tool List (45 Tools)
 
-### ✏️ Smart Content Insertion (4 tools)
-- **`insert_after_heading_fs_tool`**: Insert content after specific headings
-  - Supports all heading levels (# to ######)
-  - Case-sensitive matching
-- **`insert_after_block_fs_tool`**: Insert content after block references
-  - Accepts with or without `^` prefix
-- **`update_frontmatter_field_fs_tool`**: Update or add frontmatter fields
-  - Creates frontmatter if missing
-  - Supports strings, numbers, booleans, lists
-- **`append_to_note_fs_tool`**: Append content to end of note
+### 🔗 Backlink Analysis (2 tools - Filesystem)
+- `get_backlinks_fs` - Find all notes linking to a specific note
+- `get_broken_links_fs` - Identify broken wikilinks in vault
 
-### 📊 Statistics & Analytics (2 tools)
-- **`note_statistics_fs_tool`**: Comprehensive stats for individual notes
-  - Word count (excluding frontmatter and code blocks)
-  - Character counts (with/without spaces)
-  - Links: wikilinks, markdown links, totals
-  - Tags: frontmatter and inline
-  - Headings: count, by level, structure
-  - Code: fenced blocks and inline code
-  - File metadata: size, timestamps
-- **`vault_statistics_fs_tool`**: Aggregate statistics for entire vault
-  - Total notes, words, links
-  - Unique tags with sorted list
-  - Average words per note
+### 🏷️ Tag Management (4 tools - Filesystem)
+- `analyze_note_tags_fs` - Extract frontmatter and inline tags
+- `add_tag_fs` - Add tags to note frontmatter
+- `remove_tag_fs` - Remove tags from frontmatter
+- `search_by_tag_fs` - Find notes by tag
 
-## Quick Start
+### ✏️ Smart Content Insertion (4 tools - Filesystem)
+- `insert_after_heading_fs` - Insert content after specific headings
+- `insert_after_block_fs` - Insert after block references
+- `update_frontmatter_field_fs` - Update/add frontmatter fields
+- `append_to_note_fs` - Append content to note end
+
+### 📊 Statistics & Analytics (2 tools - Filesystem)
+- `note_statistics_fs` - Comprehensive stats for individual notes
+- `vault_statistics_fs` - Aggregate vault statistics
+
+### ✅ Tasks Plugin (5 tools - Filesystem)
+- `search_tasks` - Search tasks with emoji metadata (📅⏫🔁✅)
+- `create_task` - Create tasks with metadata
+- `toggle_task_status` - Toggle complete/incomplete
+- `update_task_metadata` - Update due dates, priority, recurrence
+- `get_task_statistics` - Task completion analytics
+
+### 📊 Dataview Inline Fields (4 tools - Filesystem)
+- `extract_dataview_fields` - Parse all syntax variants (::, [], ())
+- `search_by_dataview_field` - Find notes by field values
+- `add_dataview_field` - Add inline fields
+- `remove_dataview_field` - Remove inline fields
+
+### 📋 Kanban Boards (5 tools - Filesystem)
+- `parse_kanban_board` - Parse markdown Kanban structure
+- `add_kanban_card` - Add cards to columns
+- `move_kanban_card` - Move cards between columns
+- `toggle_kanban_card` - Toggle card completion
+- `get_kanban_statistics` - Board analytics
+
+### 🔗 Enhanced Link Tracking (5 tools - Filesystem)
+- `get_link_graph` - Complete vault link graph
+- `find_orphaned_notes` - Identify isolated notes
+- `find_hub_notes` - Find highly connected notes
+- `analyze_link_health` - Vault connectivity metrics
+- `get_note_connections` - Multi-level connection exploration
+
+### 🎨 Canvas Files (5 tools - Filesystem)
+- `parse_canvas` - Parse JSON Canvas v1.0 files
+- `add_canvas_node` - Add text/file nodes
+- `add_canvas_edge` - Connect nodes with edges
+- `remove_canvas_node` - Delete nodes
+- `get_canvas_node_connections` - Analyze node relationships
+
+### 📝 Templates (3 tools - Filesystem)
+- `expand_template` - Simple {{variable}} expansion
+- `create_note_from_template_fs` - Apply templates offline
+- `list_templates` - Browse available templates
+
+### 🔌 Dataview Query API (4 tools - Requires Obsidian + Dataview)
+- `execute_dataview_query` - Execute full DQL queries (LIST/TABLE/TASK)
+- `list_notes_by_tag_dql` - DQL tag-based queries
+- `list_notes_by_folder_dql` - DQL folder queries
+- `table_query_dql` - Create tabular data views
+
+### 🔌 Templater Plugin API (3 tools - Requires Obsidian + Templater)
+- `render_templater_template` - Dynamic template rendering
+- `create_note_from_template_api` - Create notes from Templater templates
+- `insert_templater_template` - Insert templates at cursor
+
+### 🔌 Workspace Management (6 tools - Requires Obsidian)
+- `get_active_file` - Get currently active file
+- `open_file` - Open files in Obsidian
+- `close_active_file` - Close current file
+- `navigate_back` - Navigate backward in history
+- `navigate_forward` - Navigate forward in history
+- `toggle_edit_mode` - Switch edit/preview mode
+
+### 🔌 Command Execution (3 tools - Requires Obsidian)
+- `execute_command` - Run Obsidian commands
+- `list_commands` - List all available commands
+- `search_commands` - Search commands by name/ID
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+```bash
+# Python 3.11+ required
+python --version
+
+# Install uv (recommended package manager)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/aleksakarac/obsidian-mcp.git
+cd obsidian-mcp
+
 # Install with uv (recommended)
 uv pip install .
 
@@ -76,16 +137,18 @@ pip install .
 
 ### Configuration
 
+#### For Filesystem-Only Tools (No Obsidian Required)
+
 Add to your Claude Code config (`~/.config/claude/claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
-    "obsidian-extended": {
+    "obsidian": {
       "command": "uv",
       "args": [
         "--directory",
-        "/absolute/path/to/CustomObsidianMcp",
+        "/absolute/path/to/obsidian-mcp",
         "run",
         "obsidian-mcp"
       ],
@@ -97,476 +160,236 @@ Add to your Claude Code config (`~/.config/claude/claude_desktop_config.json`):
 }
 ```
 
-### Usage Examples
+#### For Full Hybrid Mode (Filesystem + API Tools)
 
-**Find Backlinks**:
-```
-"Find all notes that link to my 'Project Ideas' note"
-→ Returns list of notes with wikilinks to 'Project Ideas'
+1. Install [Local REST API plugin](https://github.com/coddingtonbear/obsidian-local-rest-api) in Obsidian
+2. Configure plugin settings:
+   - Enable HTTPS: No (use HTTP for localhost)
+   - API Key: Generate a secure key
+   - Port: 27124 (default)
 
-"Check for any broken links in my vault"
-→ Identifies all wikilinks pointing to non-existent notes
-```
+3. Update Claude Code config:
 
-**Tag Management**:
-```
-"What tags are in my 'Meeting Notes' file?"
-→ Shows frontmatter and inline tags separately
-
-"Add the tag 'important' to Daily/2025-01-22.md"
-→ Adds to frontmatter, creates frontmatter if needed
-
-"Find all notes tagged with 'project'"
-→ Returns all notes containing #project tag
-```
-
-**Content Insertion**:
-```
-"Insert this task after the 'Todo' heading:
-- [ ] Review quarterly results"
-→ Inserts task immediately after ## Todo heading
-
-"Update the status field in frontmatter to 'completed'"
-→ Updates YAML frontmatter field
-
-"Append this summary to the end of my note"
-→ Adds content at end of file
-```
-
-**Statistics**:
-```
-"Show me statistics for 'Projects/Analysis.md'"
-→ Returns word count, links, tags, headings, code blocks, file metadata
-
-"What are the overall stats for my vault?"
-→ Returns total notes, words, links, unique tags, averages
-```
-
-## Development
-
-### Project Structure
-
-```
-CustomObsidianMcp/
-├── src/
-│   ├── server.py              # MCP server with tool registrations
-│   ├── tools/
-│   │   ├── backlinks.py       # NEW: Backlink analysis
-│   │   ├── tags.py            # NEW: Tag management
-│   │   ├── smart_insert.py    # NEW: Content insertion
-│   │   ├── statistics.py      # NEW: Statistics
-│   │   ├── note_management.py # EXISTING: CRUD operations
-│   │   ├── search_discovery.py # EXISTING: Search
-│   │   └── organization.py    # EXISTING: Organization
-│   ├── models/
-│   │   └── obsidian.py        # Data models
-│   └── utils/
-│       ├── validators.py      # Validation utilities
-│       └── validation.py      # Validation logic
-├── tests/
-│   ├── unit/                  # Unit tests
-│   └── integration/           # Integration tests
-├── specs/                     # Planning & specifications
-│   └── 001-obsidian-mcp-extended/
-│       ├── spec.md           # Feature specification
-│       ├── plan.md           # Implementation plan
-│       ├── tasks.md          # Task breakdown
-│       └── contracts/        # API contracts
-└── pyproject.toml            # Project configuration
-```
-
-### Running Tests
-
-```bash
-# Install dev dependencies
-uv pip install pytest pytest-cov
-
-# Run all tests
-pytest tests/
-
-# Run with coverage
-pytest tests/ --cov=src --cov-report=term-missing
-
-# Run specific test suite
-pytest tests/unit/test_backlinks.py -v
-```
-
-### Testing with MCP Inspector
-
-```bash
-npx @modelcontextprotocol/inspector uv --directory $(pwd) run obsidian-mcp
-```
-
-## API Reference
-
-### Backlink Tools
-
-#### `get_backlinks_fs_tool(note_name, vault_path?)`
-Find all notes that link to a specific note.
-
-**Input**:
-- `note_name`: Name of the target note (without .md extension)
-- `vault_path`: Optional vault path (uses OBSIDIAN_VAULT_PATH env if not provided)
-
-**Output**:
-```json
-{
-  "note_name": "Project Ideas",
-  "backlink_count": 3,
-  "backlinks": [
-    {
-      "source_file": "Daily/2025-01-22.md",
-      "link_text": "Project Ideas",
-      "has_alias": false,
-      "line_number": 15
-    }
-  ]
-}
-```
-
-#### `get_broken_links_fs_tool(vault_path?)`
-Identify all broken wikilinks in the vault.
-
-**Output**:
-```json
-{
-  "broken_count": 2,
-  "broken_links": [
-    {
-      "source_file": "Notes/Ideas.md",
-      "broken_link": "NonexistentNote",
-      "line_number": 42
-    }
-  ]
-}
-```
-
-### Tag Tools
-
-#### `analyze_note_tags_fs_tool(filepath, vault_path?)`
-Extract all tags from a note.
-
-**Output**:
-```json
-{
-  "frontmatter_tags": ["python", "testing"],
-  "inline_tags": ["bug", "urgent"],
-  "all_tags": ["python", "testing", "bug", "urgent"]
-}
-```
-
-#### `add_tag_fs_tool(filepath, tag, vault_path?)`
-Add a tag to note's frontmatter.
-
-#### `remove_tag_fs_tool(filepath, tag, vault_path?)`
-Remove a tag from note's frontmatter.
-
-#### `search_by_tag_fs_tool(tag, vault_path?)`
-Find all notes containing a specific tag.
-
-**Output**:
-```json
-{
-  "tag": "project",
-  "count": 15,
-  "notes": [
-    {
-      "filepath": "Projects/Analysis.md",
-      "in_frontmatter": true,
-      "in_content": false
-    }
-  ]
-}
-```
-
-### Insertion Tools
-
-#### `insert_after_heading_fs_tool(filepath, heading, content, vault_path?)`
-Insert content after a specific heading.
-
-**Input**:
-- `heading`: Heading text without # symbols (e.g., "Tasks")
-- `content`: Content to insert
-
-#### `insert_after_block_fs_tool(filepath, block_id, content, vault_path?)`
-Insert content after a block reference.
-
-**Input**:
-- `block_id`: Block ID with or without ^ prefix (e.g., "summary" or "^summary")
-
-#### `update_frontmatter_field_fs_tool(filepath, field, value, vault_path?)`
-Update or add a frontmatter field.
-
-**Input**:
-- `value`: Can be string, number, boolean, or list
-
-#### `append_to_note_fs_tool(filepath, content, vault_path?)`
-Append content to the end of a note.
-
-### Statistics Tools
-
-#### `note_statistics_fs_tool(filepath, vault_path?)`
-Get comprehensive statistics for a single note.
-
-**Output**:
-```json
-{
-  "word_count": 1543,
-  "character_count": 9821,
-  "character_count_no_spaces": 8234,
-  "line_count": 127,
-  "links": {
-    "wikilink_count": 15,
-    "markdown_link_count": 3,
-    "total_links": 18
-  },
-  "tags": {
-    "count": 4,
-    "unique_tags": ["project", "analysis"]
-  },
-  "headings": {
-    "count": 8,
-    "by_level": {"1": ["Title"], "2": ["Section 1", "Section 2"]},
-    "structure": [[1, "Title"], [2, "Section 1"]]
-  },
-  "code": {
-    "code_blocks": 2,
-    "inline_code": 7
-  },
-  "file": {
-    "size_bytes": 9821,
-    "size_kb": 9.59,
-    "created": "2025-01-10T14:30:00",
-    "modified": "2025-01-22T09:15:30"
-  }
-}
-```
-
-#### `vault_statistics_fs_tool(vault_path?)`
-Get aggregate statistics for the entire vault.
-
-**Output**:
-```json
-{
-  "total_notes": 234,
-  "total_words": 145621,
-  "total_links": 1823,
-  "unique_tags": 67,
-  "all_tags": ["active", "archive", "important", "..."],
-  "avg_words_per_note": 622.31
-}
-```
-
-## Performance
-
-All new features maintain the filesystem-native performance characteristics:
-
-| Operation | Vault Size | Expected Time |
-|-----------|-----------|---------------|
-| Backlinks | 1,000 notes | < 2 seconds |
-| Tag Search | 1,000 notes | < 3 seconds |
-| Content Insertion | 10,000 words | < 500ms |
-| Vault Statistics | 1,000 notes | < 30 seconds |
-
-Memory usage remains under 100MB for 1,000 note vaults.
-
-## Architecture Principles
-
-1. **Performance-First**: Direct filesystem access, no Obsidian dependency
-2. **Zero External Dependencies**: Only adds `python-frontmatter` for YAML parsing
-3. **Filesystem-Native**: All operations use standard file I/O
-4. **Backward Compatible**: All existing obsidian-mcp tools remain functional
-5. **Well-Tested**: 91.5% code coverage (106 unit tests, all passing)
-
-## Documentation
-
-- [Feature Specification](specs/001-obsidian-mcp-extended/spec.md) - Detailed requirements
-- [Implementation Plan](specs/001-obsidian-mcp-extended/plan.md) - Technical architecture
-- [Developer Quickstart](specs/001-obsidian-mcp-extended/quickstart.md) - Development guide
-- [API Contracts](specs/001-obsidian-mcp-extended/contracts/) - Tool specifications
-- [Original README](README.upstream.md) - Base obsidian-mcp documentation
-
-## Comparison with Alternatives
-
-| Feature | Obsidian MCP Extended | Base obsidian-mcp | API-based (mcp-obsidian) |
-|---------|----------------------|-------------------|--------------------------|
-| Setup Complexity | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| Performance | ⚡ Very Fast | ⚡ Very Fast | 🐢 Slower |
-| Memory Usage | 📉 Low | 📉 Low | 📈 High |
-| Obsidian Running | ❌ Not Required | ❌ Not Required | ✅ Required |
-| Backlinks | ✅ | ❌ | ✅ |
-| Tag Management | ✅ | ❌ | ✅ |
-| Smart Insertion | ✅ | ❌ | ✅ |
-| Statistics | ✅ | ❌ | ✅ |
-| Plugin Required | ❌ | ❌ | ✅ |
-| Works Offline | ✅ | ✅ | ❌ |
-
-## Troubleshooting
-
-### Common Issues
-
-#### Tools Not Appearing in Claude Code
-
-**Problem**: MCP server configured but tools don't show up
-
-**Solutions**:
-1. Verify `claude_desktop_config.json` syntax is valid JSON
-2. Check that paths are absolute (not relative)
-3. Restart Claude Code after configuration changes
-4. Check MCP server logs for errors
-
-#### "OBSIDIAN_VAULT_PATH not set" Error
-
-**Problem**: Tools fail with vault path error
-
-**Solutions**:
 ```json
 {
   "mcpServers": {
-    "obsidian-extended": {
+    "obsidian": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/obsidian-mcp",
+        "run",
+        "obsidian-mcp"
+      ],
       "env": {
-        "OBSIDIAN_VAULT_PATH": "/absolute/path/to/vault"
+        "OBSIDIAN_VAULT_PATH": "/path/to/your/obsidian/vault",
+        "OBSIDIAN_REST_API_KEY": "your-api-key-here",
+        "OBSIDIAN_API_URL": "http://localhost:27124"
       }
     }
   }
 }
 ```
 
-Ensure the path:
-- Is absolute (starts with `/` on Unix, `C:\` on Windows)
-- Points to your vault root directory
-- Has proper read/write permissions
+---
 
-#### "OBSIDIAN_REST_API_KEY not set" Error
+## 📖 Usage Examples
 
-**Problem**: Server fails to start
+### Tasks Plugin (Filesystem-Native)
 
-**Solutions**:
-- This is required by the base obsidian-mcp server
-- Set to any value (e.g., `"test"`) - not used by filesystem-native tools
-```json
-{
-  "env": {
-    "OBSIDIAN_REST_API_KEY": "your-key-here"
-  }
-}
+```python
+# Search for high-priority incomplete tasks
+search_tasks(
+    status="incomplete",
+    priority="high",
+    sort_by="due_date",
+    limit=10
+)
+
+# Create task with metadata
+create_task(
+    file_path="Projects/Current.md",
+    content="Review PR #123",
+    priority="high",
+    due_date="2025-11-01",
+    tags=["code-review", "urgent"]
+)
 ```
 
-#### Slow Performance on Large Vaults
+### Dataview Fields (Filesystem-Native)
 
-**Problem**: Operations take longer than expected
+```python
+# Extract all inline fields
+extract_dataview_fields(file_path="Project Notes.md")
 
-**Solutions**:
-1. Check vault size: `vault_statistics_fs_tool` to see note count
-2. For vaults > 5,000 notes, consider:
-   - Using more specific tag searches
-   - Filtering backlink searches to specific directories
-   - Running statistics only when needed
+# Find notes where status=active
+search_by_dataview_field(
+    field_name="status",
+    field_value="active"
+)
+```
 
-**Performance Expectations**:
-- 1,000 notes: All operations < 5s
-- 10,000 notes: Statistics < 5 minutes
+### Kanban Boards (Filesystem-Native)
 
-#### Unicode or Special Character Issues
+```python
+# Parse board structure
+parse_kanban_board(file_path="Boards/Sprint.md")
 
-**Problem**: Notes with non-ASCII characters cause errors
+# Move card between columns
+move_kanban_card(
+    file_path="Boards/Sprint.md",
+    card_text="Implement authentication",
+    from_column="To Do",
+    to_column="In Progress"
+)
+```
 
-**Solutions**:
-- Ensure all markdown files are UTF-8 encoded
-- Check file permissions (should be readable)
-- Verify filenames don't contain invalid characters for your OS
+### Link Analysis (Filesystem-Native)
 
-#### Permission Errors
+```python
+# Find orphaned notes
+find_orphaned_notes()
 
-**Problem**: "Permission denied" when accessing files
+# Get link graph
+get_link_graph()
 
-**Solutions**:
-1. Check vault directory permissions:
-   ```bash
-   ls -la /path/to/vault
-   ```
-2. Ensure user running Claude Code has read/write access
-3. On Unix/Mac, verify permissions:
-   ```bash
-   chmod -R u+rw /path/to/vault
-   ```
+# Analyze vault health
+analyze_link_health()
+```
 
-#### Tag Search Returns Unexpected Results
+### Dataview Queries (Requires Obsidian)
 
-**Problem**: Tag searches find too many or too few results
+```python
+# Execute DQL query
+execute_dataview_query(
+    query="TABLE status, due FROM #project WHERE status = 'active'"
+)
+```
 
-**Solutions**:
-- Remember: Tag matching is case-sensitive
-- Use `#` prefix for consistency: `search_by_tag_fs_tool("project")` not `"#project"`
-- Check both frontmatter and inline tags with `analyze_note_tags_fs_tool`
-- Nested tags are hierarchical: `project/active` matches `#project/active/critical`
+### Workspace Control (Requires Obsidian)
 
-#### Content Insertion Not Working
+```python
+# Open file
+open_file(file_path="Daily/2025-10-22.md")
 
-**Problem**: `insert_after_heading_fs_tool` says heading not found
+# Get active file
+get_active_file()
 
-**Solutions**:
-- Heading matching is case-sensitive: "Tasks" ≠ "tasks"
-- Don't include `#` symbols in heading parameter
-- For multiple headings with same text, content inserts after **first** occurrence
-- Check heading exists: use `note_statistics_fs_tool` to see all headings
+# Execute command
+execute_command(command_id="editor:toggle-bold")
+```
 
-#### Broken Links Not Detected
+---
 
-**Problem**: `get_broken_links_fs_tool` misses some broken links
+## 🏗️ Architecture
 
-**Solutions**:
-- Only detects wikilinks (`[[note]]` format)
-- Markdown links (`[text](url)`) are not checked
-- Section references like `[[note#section]]` check only if note exists (not section)
-- Case-sensitive: `[[Note]]` and `[[note]]` are different
+### Hybrid Design Philosophy
 
-### Getting Help
+**Filesystem-First Approach:**
+- Everything that CAN be filesystem-native, IS filesystem-native
+- Direct file access for reading/writing markdown
+- Zero dependencies on Obsidian plugins for core features
+- Full offline capability
 
-1. **Check logs**: MCP server logs in Claude Code console
-2. **Validate setup**: Use MCP Inspector for debugging:
-   ```bash
-   npx @modelcontextprotocol/inspector uv --directory $(pwd) run obsidian-mcp
-   ```
-3. **Test with sample vault**: Create a simple test vault to isolate issues
-4. **File an issue**: Include:
-   - Claude Code version
-   - Operating system
-   - Vault size (number of notes)
-   - Error messages or unexpected behavior
-   - Steps to reproduce
+**API Enhancement:**
+- API tools complement filesystem tools
+- Provide features impossible without Obsidian (workspace UI, command execution)
+- Enable plugin integration (Templater, Dataview DQL)
+- Graceful degradation with clear error messages
 
-### Known Limitations
+### Technology Stack
 
-- **Tags**: Only ASCII tags supported in regex (Unicode tags in frontmatter work)
-- **Wikilinks**: Embedded links (transclusions) not fully supported
-- **Performance**: Vault statistics can be slow for > 10,000 notes
-- **Concurrent access**: No locking mechanism (avoid concurrent writes)
+- **FastMCP**: MCP protocol implementation
+- **Pydantic**: Type-safe data models with validation
+- **Python Standard Library**: Zero external dependencies for filesystem operations
+- **httpx**: Async HTTP client for API tools
 
-## Contributing
+### Performance
 
-This project follows a spec-driven development approach using [GitHub Spec-Kit](https://github.com/github/spec-kit).
+**Filesystem Tools:**
+- 1,000 notes: < 3 seconds for full vault scans
+- Single note operations: < 100ms
+- Link graph generation: < 10 seconds for 1,000 notes
 
-See the [constitution](./.specify/memory/constitution.md) for development principles and guidelines.
+**API Tools:**
+- Command execution: < 500ms
+- Query execution: Depends on Dataview plugin
+- Workspace operations: < 200ms
 
-## License
+---
 
-Same license as the original [obsidian-mcp](https://github.com/punkpeye/obsidian-mcp) project. See [LICENSE](LICENSE).
+## 🧪 Testing
 
-## Acknowledgments
+See [TESTING.md](TESTING.md) for comprehensive testing documentation.
 
-This project extends the excellent work of [punkpeye/obsidian-mcp](https://github.com/punkpeye/obsidian-mcp), adding advanced features while maintaining its core performance characteristics.
+```bash
+# Run all tests
+uv run pytest
 
-## Status
+# Run specific test suite
+uv run pytest tests/unit/test_tasks.py -v
 
-✅ **Production Ready** - All 4 user stories complete!
+# Run with coverage
+uv run pytest --cov=src --cov-report=html
+```
 
-**Progress**: 82/112 tasks complete (73%)
-- ✅ User Story 1: Backlinks (14 tests, 2 tools)
-- ✅ User Story 2: Tags (26 tests, 4 tools)
-- ✅ User Story 3: Smart Insertion (35 tests, 4 tools)
-- ✅ User Story 4: Statistics (31 tests, 2 tools)
+---
 
-**Test Coverage**: 106/106 unit tests passing (100%)
+## 📝 Development
 
-See [tasks.md](specs/001-obsidian-mcp-extended/tasks.md) for detailed progress.
+### Project Structure
+
+```
+obsidian-mcp/
+├── src/
+│   ├── models/          # Pydantic data models
+│   ├── tools/           # MCP tool implementations
+│   ├── utils/           # Shared utilities (patterns, API client)
+│   └── server.py        # FastMCP server with tool registrations
+├── tests/
+│   ├── unit/            # Unit tests for tools
+│   └── integration/     # End-to-end workflow tests
+├── specs/               # Feature specifications
+└── pyproject.toml       # Project configuration
+```
+
+### Adding New Tools
+
+1. Create tool module in `src/tools/`
+2. Add Pydantic models to `src/models/obsidian.py` (if needed)
+3. Register tool in `src/server.py` with `@mcp.tool()` decorator
+4. Add unit tests in `tests/unit/`
+5. Update README.md and CHANGELOG.md
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please:
+1. Follow existing code style
+2. Add tests for new features
+3. Update documentation
+4. Ensure all tests pass
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details
+
+---
+
+## 🙏 Acknowledgments
+
+- Base implementation: [obsidian-mcp](https://github.com/punkpeye/obsidian-mcp)
+- MCP Protocol: [Model Context Protocol](https://modelcontextprotocol.io/)
+- Obsidian: [Obsidian.md](https://obsidian.md/)
+
+---
+
+## 📚 Additional Documentation
+
+- [TESTING.md](TESTING.md) - Testing guide
+- [CHANGELOG.md](CHANGELOG.md) - Version history
+- [README.upstream.md](README.upstream.md) - Original obsidian-mcp README
+- [specs/](specs/) - Feature specifications and design docs
