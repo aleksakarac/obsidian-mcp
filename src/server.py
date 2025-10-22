@@ -1,7 +1,7 @@
 """Main entry point for Obsidian MCP server."""
 
 import os
-from typing import Annotated, Optional, List, Literal
+from typing import Annotated, Optional, List, Literal, Dict
 from pydantic import Field
 from fastmcp import FastMCP
 from fastmcp.exceptions import McpError
