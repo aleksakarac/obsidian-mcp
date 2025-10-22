@@ -5,6 +5,7 @@ from typing import Annotated, Optional, List, Literal, Dict
 from pydantic import Field
 from fastmcp import FastMCP
 from fastmcp.exceptions import McpError
+from .utils.error_utils import create_error
 
 # Import all tools
 from .tools import (
@@ -186,9 +187,9 @@ async def read_note_tool(
     try:
         return await read_note(path, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to read note: {str(e)}")
+        raise create_error(f"Failed to read note: {str(e)}")
 
 @mcp.tool()
 async def create_note_tool(
@@ -232,9 +233,9 @@ async def create_note_tool(
     try:
         return await create_note(path, content, overwrite, ctx)
     except (ValueError, FileExistsError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to create note: {str(e)}")
+        raise create_error(f"Failed to create note: {str(e)}")
 
 @mcp.tool()
 async def update_note_tool(
@@ -281,9 +282,9 @@ async def update_note_tool(
     try:
         return await update_note(path, content, create_if_not_exists, merge_strategy, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to update note: {str(e)}")
+        raise create_error(f"Failed to update note: {str(e)}")
 
 @mcp.tool()
 async def delete_note_tool(path: str, ctx=None):
@@ -299,9 +300,9 @@ async def delete_note_tool(path: str, ctx=None):
     try:
         return await delete_note(path, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to delete note: {str(e)}")
+        raise create_error(f"Failed to delete note: {str(e)}")
 
 @mcp.tool()
 async def search_notes_tool(
@@ -343,9 +344,9 @@ async def search_notes_tool(
     try:
         return await search_notes(query, context_length, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Search failed: {str(e)}")
+        raise create_error(f"Search failed: {str(e)}")
 
 @mcp.tool()
 async def search_by_date_tool(
@@ -384,9 +385,9 @@ async def search_by_date_tool(
     try:
         return await search_by_date(date_type, days_ago, operator, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Date search failed: {str(e)}")
+        raise create_error(f"Date search failed: {str(e)}")
 
 @mcp.tool()
 async def list_notes_tool(directory: str = None, recursive: bool = True, ctx=None):
@@ -403,7 +404,7 @@ async def list_notes_tool(directory: str = None, recursive: bool = True, ctx=Non
     try:
         return await list_notes(directory, recursive, ctx)
     except Exception as e:
-        raise McpError(f"Failed to list notes: {str(e)}")
+        raise create_error(f"Failed to list notes: {str(e)}")
 
 @mcp.tool()
 async def list_folders_tool(
@@ -437,9 +438,9 @@ async def list_folders_tool(
     try:
         return await list_folders(directory, recursive, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to list folders: {str(e)}")
+        raise create_error(f"Failed to list folders: {str(e)}")
 
 @mcp.tool()
 async def move_note_tool(source_path: str, destination_path: str, update_links: bool = True, ctx=None):
@@ -457,9 +458,9 @@ async def move_note_tool(source_path: str, destination_path: str, update_links: 
     try:
         return await move_note(source_path, destination_path, update_links, ctx)
     except (ValueError, FileNotFoundError, FileExistsError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to move note: {str(e)}")
+        raise create_error(f"Failed to move note: {str(e)}")
 
 @mcp.tool()
 async def create_folder_tool(
@@ -498,9 +499,9 @@ async def create_folder_tool(
     try:
         return await create_folder(folder_path, create_placeholder, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to create folder: {str(e)}")
+        raise create_error(f"Failed to create folder: {str(e)}")
 
 @mcp.tool()
 async def move_folder_tool(
@@ -541,9 +542,9 @@ async def move_folder_tool(
     try:
         return await move_folder(source_folder, destination_folder, update_links, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to move folder: {str(e)}")
+        raise create_error(f"Failed to move folder: {str(e)}")
 
 @mcp.tool()
 async def add_tags_tool(
@@ -579,9 +580,9 @@ async def add_tags_tool(
     try:
         return await add_tags(path, tags, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to add tags: {str(e)}")
+        raise create_error(f"Failed to add tags: {str(e)}")
 
 @mcp.tool()
 async def update_tags_tool(
@@ -622,9 +623,9 @@ async def update_tags_tool(
     try:
         return await update_tags(path, tags, merge, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to update tags: {str(e)}")
+        raise create_error(f"Failed to update tags: {str(e)}")
 
 @mcp.tool()
 async def remove_tags_tool(path: str, tags: list[str], ctx=None):
@@ -641,9 +642,9 @@ async def remove_tags_tool(path: str, tags: list[str], ctx=None):
     try:
         return await remove_tags(path, tags, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to remove tags: {str(e)}")
+        raise create_error(f"Failed to remove tags: {str(e)}")
 
 @mcp.tool()
 async def get_note_info_tool(path: str, ctx=None):
@@ -659,9 +660,9 @@ async def get_note_info_tool(path: str, ctx=None):
     try:
         return await get_note_info(path, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get note info: {str(e)}")
+        raise create_error(f"Failed to get note info: {str(e)}")
 
 @mcp.tool()
 async def get_backlinks_tool(
@@ -708,9 +709,9 @@ async def get_backlinks_tool(
     try:
         return await get_backlinks(path, include_context, context_length, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get backlinks: {str(e)}")
+        raise create_error(f"Failed to get backlinks: {str(e)}")
 
 @mcp.tool()
 async def get_outgoing_links_tool(
@@ -746,9 +747,9 @@ async def get_outgoing_links_tool(
     try:
         return await get_outgoing_links(path, check_validity, ctx)
     except (ValueError, FileNotFoundError) as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get outgoing links: {str(e)}")
+        raise create_error(f"Failed to get outgoing links: {str(e)}")
 
 @mcp.tool()
 async def find_broken_links_tool(
@@ -778,9 +779,9 @@ async def find_broken_links_tool(
     try:
         return await find_broken_links(directory, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to find broken links: {str(e)}")
+        raise create_error(f"Failed to find broken links: {str(e)}")
 
 @mcp.tool()
 async def list_tags_tool(
@@ -819,9 +820,9 @@ async def list_tags_tool(
     try:
         return await list_tags(include_counts, sort_by, ctx)
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to list tags: {str(e)}")
+        raise create_error(f"Failed to list tags: {str(e)}")
 
 
 # Filesystem-native backlinks tools (extended functionality)
@@ -863,10 +864,10 @@ async def get_backlinks_fs_tool(
         # Get vault path from parameter or environment
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         if not os.path.exists(vault):
-            raise McpError(f"Vault not found: {vault}")
+            raise create_error(f"Vault not found: {vault}")
 
         # Call filesystem-native function
         backlinks = find_backlinks_fs(vault, note_name)
@@ -877,7 +878,7 @@ async def get_backlinks_fs_tool(
             "backlinks": backlinks
         }
     except Exception as e:
-        raise McpError(f"Failed to find backlinks: {str(e)}")
+        raise create_error(f"Failed to find backlinks: {str(e)}")
 
 
 @mcp.tool()
@@ -911,10 +912,10 @@ async def get_broken_links_fs_tool(
         # Get vault path from parameter or environment
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         if not os.path.exists(vault):
-            raise McpError(f"Vault not found: {vault}")
+            raise create_error(f"Vault not found: {vault}")
 
         # Call filesystem-native function
         broken_links = find_broken_links_fs(vault)
@@ -941,7 +942,7 @@ async def get_broken_links_fs_tool(
 
         return result
     except Exception as e:
-        raise McpError(f"Failed to find broken links: {str(e)}")
+        raise create_error(f"Failed to find broken links: {str(e)}")
 
 
 # Filesystem-native tag management tools
@@ -984,7 +985,7 @@ async def analyze_note_tags_fs_tool(
             filepath = os.path.join(vault, filepath)
 
         if not os.path.exists(filepath):
-            raise McpError(f"File not found: {filepath}")
+            raise create_error(f"File not found: {filepath}")
 
         # Read file and extract tags
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -994,7 +995,7 @@ async def analyze_note_tags_fs_tool(
         return result
 
     except Exception as e:
-        raise McpError(f"Failed to analyze tags: {str(e)}")
+        raise create_error(f"Failed to analyze tags: {str(e)}")
 
 
 @mcp.tool()
@@ -1042,9 +1043,9 @@ async def add_tag_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(f"File not found: {str(e)}")
+        raise create_error(f"File not found: {str(e)}")
     except Exception as e:
-        raise McpError(f"Failed to add tag: {str(e)}")
+        raise create_error(f"Failed to add tag: {str(e)}")
 
 
 @mcp.tool()
@@ -1091,9 +1092,9 @@ async def remove_tag_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(f"File not found: {str(e)}")
+        raise create_error(f"File not found: {str(e)}")
     except Exception as e:
-        raise McpError(f"Failed to remove tag: {str(e)}")
+        raise create_error(f"Failed to remove tag: {str(e)}")
 
 
 @mcp.tool()
@@ -1133,10 +1134,10 @@ async def search_by_tag_fs_tool(
         # Get vault path
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         if not os.path.exists(vault):
-            raise McpError(f"Vault not found: {vault}")
+            raise create_error(f"Vault not found: {vault}")
 
         # Search for notes
         notes = find_notes_by_tag_fs(vault, tag)
@@ -1148,7 +1149,7 @@ async def search_by_tag_fs_tool(
         }
 
     except Exception as e:
-        raise McpError(f"Failed to search by tag: {str(e)}")
+        raise create_error(f"Failed to search by tag: {str(e)}")
 
 
 # ==============================================================================
@@ -1200,7 +1201,7 @@ async def insert_after_heading_fs_tool(
         # Resolve filepath
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         # Resolve absolute path
         if not os.path.isabs(filepath):
@@ -1212,9 +1213,9 @@ async def insert_after_heading_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to insert after heading: {str(e)}")
+        raise create_error(f"Failed to insert after heading: {str(e)}")
 
 
 @mcp.tool()
@@ -1261,7 +1262,7 @@ async def insert_after_block_fs_tool(
         # Resolve filepath
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         # Resolve absolute path
         if not os.path.isabs(filepath):
@@ -1273,9 +1274,9 @@ async def insert_after_block_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to insert after block: {str(e)}")
+        raise create_error(f"Failed to insert after block: {str(e)}")
 
 
 @mcp.tool()
@@ -1323,7 +1324,7 @@ async def update_frontmatter_field_fs_tool(
         # Resolve filepath
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         # Resolve absolute path
         if not os.path.isabs(filepath):
@@ -1335,9 +1336,9 @@ async def update_frontmatter_field_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to update frontmatter: {str(e)}")
+        raise create_error(f"Failed to update frontmatter: {str(e)}")
 
 
 @mcp.tool()
@@ -1379,7 +1380,7 @@ async def append_to_note_fs_tool(
         # Resolve filepath
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         # Resolve absolute path
         if not os.path.isabs(filepath):
@@ -1391,9 +1392,9 @@ async def append_to_note_fs_tool(
         return result
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to append to note: {str(e)}")
+        raise create_error(f"Failed to append to note: {str(e)}")
 
 
 # ==============================================================================
@@ -1453,9 +1454,9 @@ async def note_statistics_fs_tool(
         return stats
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get note statistics: {str(e)}")
+        raise create_error(f"Failed to get note statistics: {str(e)}")
 
 
 @mcp.tool()
@@ -1496,10 +1497,10 @@ async def vault_statistics_fs_tool(
         # Get vault path
         vault = vault_path or os.getenv("OBSIDIAN_VAULT_PATH")
         if not vault:
-            raise McpError("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
+            raise create_error("OBSIDIAN_VAULT_PATH environment variable not set and vault_path not provided")
 
         if not os.path.exists(vault):
-            raise McpError(f"Vault not found: {vault}")
+            raise create_error(f"Vault not found: {vault}")
 
         # Get statistics
         stats = get_vault_stats_fs(vault)
@@ -1507,9 +1508,9 @@ async def vault_statistics_fs_tool(
         return stats
 
     except FileNotFoundError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get vault statistics: {str(e)}")
+        raise create_error(f"Failed to get vault statistics: {str(e)}")
 
 
 # ============================================================================
@@ -1625,9 +1626,9 @@ async def search_tasks_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to search tasks: {str(e)}")
+        raise create_error(f"Failed to search tasks: {str(e)}")
 
 
 @mcp.tool()
@@ -1716,14 +1717,14 @@ async def create_task_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to create task"))
+            raise create_error(result.get("error", "Failed to create task"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to create task: {str(e)}")
+        raise create_error(f"Failed to create task: {str(e)}")
 
 
 @mcp.tool()
@@ -1769,14 +1770,14 @@ async def toggle_task_status_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to toggle task status"))
+            raise create_error(result.get("error", "Failed to toggle task status"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to toggle task status: {str(e)}")
+        raise create_error(f"Failed to toggle task status: {str(e)}")
 
 
 @mcp.tool()
@@ -1848,7 +1849,7 @@ async def update_task_metadata_tool(
             updates["recurrence"] = recurrence
 
         if not updates:
-            raise McpError("At least one metadata field must be provided for update")
+            raise create_error("At least one metadata field must be provided for update")
 
         result = await update_task_metadata_fs_tool(
             file_path=file_path,
@@ -1858,14 +1859,14 @@ async def update_task_metadata_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to update task metadata"))
+            raise create_error(result.get("error", "Failed to update task metadata"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to update task metadata: {str(e)}")
+        raise create_error(f"Failed to update task metadata: {str(e)}")
 
 
 @mcp.tool()
@@ -1923,9 +1924,9 @@ async def get_task_statistics_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get task statistics: {str(e)}")
+        raise create_error(f"Failed to get task statistics: {str(e)}")
 
 
 # ============================================================================
@@ -1982,9 +1983,9 @@ async def extract_dataview_fields_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to extract Dataview fields: {str(e)}")
+        raise create_error(f"Failed to extract Dataview fields: {str(e)}")
 
 
 @mcp.tool()
@@ -2039,9 +2040,9 @@ async def search_by_dataview_field_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to search by Dataview field: {str(e)}")
+        raise create_error(f"Failed to search by Dataview field: {str(e)}")
 
 
 @mcp.tool()
@@ -2112,14 +2113,14 @@ async def add_dataview_field_tool(
         )
 
         if not result.get("success"):
-            raise McpError("Failed to add Dataview field")
+            raise create_error("Failed to add Dataview field")
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to add Dataview field: {str(e)}")
+        raise create_error(f"Failed to add Dataview field: {str(e)}")
 
 
 @mcp.tool()
@@ -2171,14 +2172,14 @@ async def remove_dataview_field_tool(
         )
 
         if not result.get("success"):
-            raise McpError("Failed to remove Dataview field (field may not exist)")
+            raise create_error("Failed to remove Dataview field (field may not exist)")
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to remove Dataview field: {str(e)}")
+        raise create_error(f"Failed to remove Dataview field: {str(e)}")
 
 
 # ============================================================================
@@ -2236,9 +2237,9 @@ async def parse_kanban_board_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to parse Kanban board: {str(e)}")
+        raise create_error(f"Failed to parse Kanban board: {str(e)}")
 
 
 @mcp.tool()
@@ -2312,14 +2313,14 @@ async def add_kanban_card_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to add Kanban card"))
+            raise create_error(result.get("error", "Failed to add Kanban card"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to add Kanban card: {str(e)}")
+        raise create_error(f"Failed to add Kanban card: {str(e)}")
 
 
 @mcp.tool()
@@ -2384,14 +2385,14 @@ async def move_kanban_card_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to move Kanban card"))
+            raise create_error(result.get("error", "Failed to move Kanban card"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to move Kanban card: {str(e)}")
+        raise create_error(f"Failed to move Kanban card: {str(e)}")
 
 
 @mcp.tool()
@@ -2437,14 +2438,14 @@ async def toggle_kanban_card_tool(
         )
 
         if not result.get("success"):
-            raise McpError(result.get("error", "Failed to toggle Kanban card"))
+            raise create_error(result.get("error", "Failed to toggle Kanban card"))
 
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to toggle Kanban card: {str(e)}")
+        raise create_error(f"Failed to toggle Kanban card: {str(e)}")
 
 
 @mcp.tool()
@@ -2489,9 +2490,9 @@ async def get_kanban_statistics_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get Kanban statistics: {str(e)}")
+        raise create_error(f"Failed to get Kanban statistics: {str(e)}")
 
 
 # ============================================================================
@@ -2532,9 +2533,9 @@ async def get_link_graph_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get link graph: {str(e)}")
+        raise create_error(f"Failed to get link graph: {str(e)}")
 
 
 @mcp.tool()
@@ -2569,9 +2570,9 @@ async def find_orphaned_notes_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to find orphaned notes: {str(e)}")
+        raise create_error(f"Failed to find orphaned notes: {str(e)}")
 
 
 @mcp.tool()
@@ -2615,9 +2616,9 @@ async def find_hub_notes_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to find hub notes: {str(e)}")
+        raise create_error(f"Failed to find hub notes: {str(e)}")
 
 
 @mcp.tool()
@@ -2657,9 +2658,9 @@ async def analyze_link_health_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to analyze link health: {str(e)}")
+        raise create_error(f"Failed to analyze link health: {str(e)}")
 
 
 @mcp.tool()
@@ -2715,9 +2716,9 @@ async def get_note_connections_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to get note connections: {str(e)}")
+        raise create_error(f"Failed to get note connections: {str(e)}")
 
 
 # ============================================================================
@@ -2768,9 +2769,9 @@ async def execute_dataview_query_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to execute Dataview query: {str(e)}")
+        raise create_error(f"Failed to execute Dataview query: {str(e)}")
 
 
 @mcp.tool()
@@ -2820,9 +2821,9 @@ async def list_notes_by_tag_dql_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to list notes by tag: {str(e)}")
+        raise create_error(f"Failed to list notes by tag: {str(e)}")
 
 
 @mcp.tool()
@@ -2872,9 +2873,9 @@ async def list_notes_by_folder_dql_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to list notes by folder: {str(e)}")
+        raise create_error(f"Failed to list notes by folder: {str(e)}")
 
 
 @mcp.tool()
@@ -2930,9 +2931,9 @@ async def table_query_dql_tool(
         return result
 
     except ValueError as e:
-        raise McpError(str(e))
+        raise create_error(str(e))
     except Exception as e:
-        raise McpError(f"Failed to execute table query: {str(e)}")
+        raise create_error(f"Failed to execute table query: {str(e)}")
 
 
 # ============================================================================
@@ -2951,7 +2952,7 @@ async def render_templater_template_tool(
     try:
         return await render_templater_template_api_tool(template_file, target_file)
     except Exception as e:
-        raise McpError(f"Failed to render template: {str(e)}")
+        raise create_error(f"Failed to render template: {str(e)}")
 
 @mcp.tool()
 async def expand_template_tool(
@@ -2964,7 +2965,7 @@ async def expand_template_tool(
     try:
         return await expand_template_fs_tool(template_path, variables, None, vault_path)
     except Exception as e:
-        raise McpError(f"Failed to expand template: {str(e)}")
+        raise create_error(f"Failed to expand template: {str(e)}")
 
 @mcp.tool()
 async def list_templates_tool(
@@ -2976,7 +2977,7 @@ async def list_templates_tool(
     try:
         return await list_templates_fs_tool(template_folder, vault_path)
     except Exception as e:
-        raise McpError(f"Failed to list templates: {str(e)}")
+        raise create_error(f"Failed to list templates: {str(e)}")
 
 @mcp.tool()
 async def get_active_file_tool(ctx=None):
@@ -2984,7 +2985,7 @@ async def get_active_file_tool(ctx=None):
     try:
         return await get_active_file_api_tool()
     except Exception as e:
-        raise McpError(f"Failed to get active file: {str(e)}")
+        raise create_error(f"Failed to get active file: {str(e)}")
 
 @mcp.tool()
 async def open_file_tool(
@@ -2996,7 +2997,7 @@ async def open_file_tool(
     try:
         return await open_file_api_tool(file_path, new_pane)
     except Exception as e:
-        raise McpError(f"Failed to open file: {str(e)}")
+        raise create_error(f"Failed to open file: {str(e)}")
 
 @mcp.tool()
 async def parse_canvas_tool(
@@ -3008,7 +3009,7 @@ async def parse_canvas_tool(
     try:
         return await parse_canvas_fs_tool(file_path, vault_path)
     except Exception as e:
-        raise McpError(f"Failed to parse canvas: {str(e)}")
+        raise create_error(f"Failed to parse canvas: {str(e)}")
 
 @mcp.tool()
 async def add_canvas_node_tool(
@@ -3024,7 +3025,7 @@ async def add_canvas_node_tool(
     try:
         return await add_canvas_node_fs_tool(file_path, node_type, content, x, y, 250, 60, vault_path)
     except Exception as e:
-        raise McpError(f"Failed to add canvas node: {str(e)}")
+        raise create_error(f"Failed to add canvas node: {str(e)}")
 
 @mcp.tool()
 async def execute_command_tool(
@@ -3035,7 +3036,7 @@ async def execute_command_tool(
     try:
         return await execute_command_api_tool(command_id, None)
     except Exception as e:
-        raise McpError(f"Failed to execute command: {str(e)}")
+        raise create_error(f"Failed to execute command: {str(e)}")
 
 @mcp.tool()
 async def list_commands_tool(ctx=None):
@@ -3043,7 +3044,7 @@ async def list_commands_tool(ctx=None):
     try:
         return await list_commands_api_tool()
     except Exception as e:
-        raise McpError(f"Failed to list commands: {str(e)}")
+        raise create_error(f"Failed to list commands: {str(e)}")
 
 
 # ============================================================================

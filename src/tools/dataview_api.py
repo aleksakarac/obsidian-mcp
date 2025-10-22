@@ -18,6 +18,7 @@ from typing import Dict, List, Optional, Any
 
 from ..utils.api_availability import require_api_available, get_api_client
 from fastmcp.exceptions import McpError
+from ..utils.error_utils import create_error
 
 
 # ============================================================================
@@ -44,7 +45,7 @@ async def execute_dataview_query(query: str) -> Dict[str, Any]:
         result = await client.execute_dataview_query(query)
         return result
     except Exception as e:
-        raise McpError(f"Dataview query failed: {str(e)}")
+        raise create_error(f"Dataview query failed: {str(e)}")
 
 
 # ============================================================================

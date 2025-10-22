@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Any
 
 from ..utils.api_availability import require_api_available, get_api_client
 from fastmcp.exceptions import McpError
+from ..utils.error_utils import create_error
 
 
 # ============================================================================
@@ -42,7 +43,7 @@ async def execute_command(
         result = await client.execute_command(command_id, args)
         return result
     except Exception as e:
-        raise McpError(f"Command execution failed: {str(e)}")
+        raise create_error(f"Command execution failed: {str(e)}")
 
 
 async def list_available_commands() -> List[Dict[str, Any]]:
@@ -62,7 +63,7 @@ async def list_available_commands() -> List[Dict[str, Any]]:
         result = await client.execute_command("app:list-commands")
         return result
     except Exception as e:
-        raise McpError(f"Failed to list commands: {str(e)}")
+        raise create_error(f"Failed to list commands: {str(e)}")
 
 
 # ============================================================================

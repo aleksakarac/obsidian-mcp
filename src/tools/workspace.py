@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Any
 
 from ..utils.api_availability import require_api_available, get_api_client
 from fastmcp.exceptions import McpError
+from ..utils.error_utils import create_error
 
 
 # ============================================================================
@@ -37,7 +38,7 @@ async def get_active_file() -> Dict[str, Any]:
         result = await client.execute_command("app:get-active-file")
         return result
     except Exception as e:
-        raise McpError(f"Failed to get active file: {str(e)}")
+        raise create_error(f"Failed to get active file: {str(e)}")
 
 
 async def open_file(file_path: str, new_leaf: bool = False) -> Dict[str, Any]:
@@ -67,7 +68,7 @@ async def open_file(file_path: str, new_leaf: bool = False) -> Dict[str, Any]:
         )
         return result
     except Exception as e:
-        raise McpError(f"Failed to open file: {str(e)}")
+        raise create_error(f"Failed to open file: {str(e)}")
 
 
 # ============================================================================
@@ -138,7 +139,7 @@ async def close_active_file_api_tool() -> Dict[str, Any]:
             "result": result,
         }
     except Exception as e:
-        raise McpError(f"Failed to close active file: {str(e)}")
+        raise create_error(f"Failed to close active file: {str(e)}")
 
 
 async def navigate_back_api_tool() -> Dict[str, Any]:
@@ -162,7 +163,7 @@ async def navigate_back_api_tool() -> Dict[str, Any]:
             "result": result,
         }
     except Exception as e:
-        raise McpError(f"Failed to navigate back: {str(e)}")
+        raise create_error(f"Failed to navigate back: {str(e)}")
 
 
 async def navigate_forward_api_tool() -> Dict[str, Any]:
@@ -186,7 +187,7 @@ async def navigate_forward_api_tool() -> Dict[str, Any]:
             "result": result,
         }
     except Exception as e:
-        raise McpError(f"Failed to navigate forward: {str(e)}")
+        raise create_error(f"Failed to navigate forward: {str(e)}")
 
 
 async def toggle_edit_mode_api_tool() -> Dict[str, Any]:
@@ -210,4 +211,4 @@ async def toggle_edit_mode_api_tool() -> Dict[str, Any]:
             "result": result,
         }
     except Exception as e:
-        raise McpError(f"Failed to toggle edit mode: {str(e)}")
+        raise create_error(f"Failed to toggle edit mode: {str(e)}")

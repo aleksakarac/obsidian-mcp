@@ -7,6 +7,7 @@ called without the API running.
 
 from fastmcp.exceptions import McpError
 from .obsidian_api_client import ObsidianAPIClient
+from .error_utils import create_error
 
 
 # Singleton API client instance
@@ -42,20 +43,18 @@ async def require_api_available():
     """
     client = get_api_client()
     if not await client.is_available():
-        raise McpError(
-            error_code="API_UNAVAILABLE",
-            message=(
-                "This tool requires Obsidian to be running with the Local REST API plugin enabled.\n\n"
-                "To use this feature:\n"
-                "1. Ensure Obsidian is running\n"
-                "2. Install the 'Local REST API' plugin from Community Plugins\n"
-                "3. Enable the plugin in Settings > Community Plugins\n"
-                "4. Configure the API key in plugin settings\n"
-                "5. Set environment variables:\n"
-                "   - OBSIDIAN_API_URL (default: http://localhost:27124)\n"
-                "   - OBSIDIAN_REST_API_KEY (from plugin settings)\n\n"
-                "Note: Many features work without the API using filesystem-native tools."
-            )
+        raise create_error(
+            "This tool requires Obsidian to be running with the Local REST API plugin enabled.\n\n"
+            "To use this feature:\n"
+            "1. Ensure Obsidian is running\n"
+            "2. Install the 'Local REST API' plugin from Community Plugins\n"
+            "3. Enable the plugin in Settings > Community Plugins\n"
+            "4. Configure the API key in plugin settings\n"
+            "5. Set environment variables:\n"
+            "   - OBSIDIAN_API_URL (default: http://localhost:27124)\n"
+            "   - OBSIDIAN_REST_API_KEY (from plugin settings)\n\n"
+            "Note: Many features work without the API using filesystem-native tools.",
+            code=503  # Service Unavailable
         )
 
 

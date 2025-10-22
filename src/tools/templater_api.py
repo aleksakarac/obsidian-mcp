@@ -19,6 +19,7 @@ from typing import Dict, List, Optional, Any
 
 from ..utils.api_availability import require_api_available, get_api_client
 from fastmcp.exceptions import McpError
+from ..utils.error_utils import create_error
 
 
 # ============================================================================
@@ -56,7 +57,7 @@ async def render_templater_template(
         )
         return result
     except Exception as e:
-        raise McpError(f"Templater rendering failed: {str(e)}")
+        raise create_error(f"Templater rendering failed: {str(e)}")
 
 
 async def create_note_from_template(
@@ -92,7 +93,7 @@ async def create_note_from_template(
         )
         return result
     except Exception as e:
-        raise McpError(f"Note creation from template failed: {str(e)}")
+        raise create_error(f"Note creation from template failed: {str(e)}")
 
 
 # ============================================================================
@@ -194,4 +195,4 @@ async def insert_templater_template_api_tool(
             "result": result,
         }
     except Exception as e:
-        raise McpError(f"Template insertion failed: {str(e)}")
+        raise create_error(f"Template insertion failed: {str(e)}")
