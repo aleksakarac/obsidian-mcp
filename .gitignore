@@ -61,3 +61,15 @@ Thumbs.db
 # Specify artifacts
 .specify/
 Project_Description.md
+
+# Test reports may contain API keys or sensitive data
+**/MCP_Test_Suite*/
+**/MCP_Test_Suite_V2*/
+*test_report*.md
+*Test*Report*.md
+*SECURITY*.md
+*API*Test*.md
+
+# Wrapper scripts with hardcoded credentials
+run-mcp-with-env.sh
+run-with-env.sh
