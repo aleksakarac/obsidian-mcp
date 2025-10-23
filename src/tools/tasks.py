@@ -522,7 +522,7 @@ async def create_task_fs_tool(
         scheduled_date=dates.get("scheduled_date"),
         start_date=dates.get("start_date"),
         recurrence=recurrence,
-        line_number=0,  # Will be set after insertion
+        line_number=None,  # Will be set after insertion
         source_file=file_path,
         tags=[],
     )
