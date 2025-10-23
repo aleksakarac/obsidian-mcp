@@ -1,11 +1,12 @@
 """Main entry point for Obsidian MCP server."""
 
 import os
+import httpx
 from typing import Annotated, Optional, List, Literal, Dict
 from pydantic import Field
 from fastmcp import FastMCP
 from fastmcp.exceptions import McpError
-from .utils.error_utils import create_error
+from .utils.error_utils import create_error, handle_api_error
 
 # Import all tools
 from .tools import (
@@ -146,10 +147,6 @@ from .tools.commands import (
 )
 # ============================================================================
 
-# Check for API key
-if not os.getenv("OBSIDIAN_REST_API_KEY"):
-    raise ValueError("OBSIDIAN_REST_API_KEY environment variable must be set")
-
 # Create FastMCP server instance
 mcp = FastMCP(
     "obsidian-mcp",
@@ -186,6 +183,8 @@ async def read_note_tool(
     """
     try:
         return await read_note(path, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -232,6 +231,8 @@ async def create_note_tool(
     """
     try:
         return await create_note(path, content, overwrite, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileExistsError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -281,6 +282,8 @@ async def update_note_tool(
     """
     try:
         return await update_note(path, content, create_if_not_exists, merge_strategy, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -299,6 +302,8 @@ async def delete_note_tool(path: str, ctx=None):
     """
     try:
         return await delete_note(path, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -403,6 +408,8 @@ async def list_notes_tool(directory: str = None, recursive: bool = True, ctx=Non
     """
     try:
         return await list_notes(directory, recursive, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list notes: {str(e)}")
 
@@ -439,6 +446,8 @@ async def list_folders_tool(
         return await list_folders(directory, recursive, ctx)
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list folders: {str(e)}")
 
@@ -457,6 +466,8 @@ async def move_note_tool(source_path: str, destination_path: str, update_links: 
     """
     try:
         return await move_note(source_path, destination_path, update_links, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError, FileExistsError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -500,6 +511,8 @@ async def create_folder_tool(
         return await create_folder(folder_path, create_placeholder, ctx)
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to create folder: {str(e)}")
 
@@ -541,6 +554,8 @@ async def move_folder_tool(
     """
     try:
         return await move_folder(source_folder, destination_folder, update_links, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -579,6 +594,8 @@ async def add_tags_tool(
     """
     try:
         return await add_tags(path, tags, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -622,6 +639,8 @@ async def update_tags_tool(
     """
     try:
         return await update_tags(path, tags, merge, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -641,6 +660,8 @@ async def remove_tags_tool(path: str, tags: list[str], ctx=None):
     """
     try:
         return await remove_tags(path, tags, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -661,6 +682,8 @@ async def get_note_info_tool(path: str, ctx=None):
         return await get_note_info(path, ctx)
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get note info: {str(e)}")
 
@@ -708,6 +731,8 @@ async def get_backlinks_tool(
     """
     try:
         return await get_backlinks(path, include_context, context_length, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -746,6 +771,8 @@ async def get_outgoing_links_tool(
     """
     try:
         return await get_outgoing_links(path, check_validity, ctx)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except (ValueError, FileNotFoundError) as e:
         raise create_error(str(e))
     except Exception as e:
@@ -780,6 +807,8 @@ async def find_broken_links_tool(
         return await find_broken_links(directory, ctx)
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to find broken links: {str(e)}")
 
@@ -821,6 +850,8 @@ async def list_tags_tool(
         return await list_tags(include_counts, sort_by, ctx)
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list tags: {str(e)}")
 
@@ -877,6 +908,8 @@ async def get_backlinks_fs_tool(
             "backlink_count": len(backlinks),
             "backlinks": backlinks
         }
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to find backlinks: {str(e)}")
 
@@ -941,6 +974,8 @@ async def get_broken_links_fs_tool(
         }
 
         return result
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to find broken links: {str(e)}")
 
@@ -994,6 +1029,8 @@ async def analyze_note_tags_fs_tool(
         result = extract_all_tags_fs(content)
         return result
 
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to analyze tags: {str(e)}")
 
@@ -1044,6 +1081,8 @@ async def add_tag_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(f"File not found: {str(e)}")
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to add tag: {str(e)}")
 
@@ -1093,6 +1132,8 @@ async def remove_tag_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(f"File not found: {str(e)}")
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to remove tag: {str(e)}")
 
@@ -1148,6 +1189,8 @@ async def search_by_tag_fs_tool(
             "notes": notes
         }
 
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to search by tag: {str(e)}")
 
@@ -1214,6 +1257,8 @@ async def insert_after_heading_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to insert after heading: {str(e)}")
 
@@ -1275,6 +1320,8 @@ async def insert_after_block_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to insert after block: {str(e)}")
 
@@ -1337,6 +1384,8 @@ async def update_frontmatter_field_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to update frontmatter: {str(e)}")
 
@@ -1393,6 +1442,8 @@ async def append_to_note_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to append to note: {str(e)}")
 
@@ -1455,6 +1506,8 @@ async def note_statistics_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get note statistics: {str(e)}")
 
@@ -1509,6 +1562,8 @@ async def vault_statistics_fs_tool(
 
     except FileNotFoundError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get vault statistics: {str(e)}")
 
@@ -1627,6 +1682,8 @@ async def search_tasks_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to search tasks: {str(e)}")
 
@@ -1723,6 +1780,8 @@ async def create_task_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to create task: {str(e)}")
 
@@ -1776,6 +1835,8 @@ async def toggle_task_status_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to toggle task status: {str(e)}")
 
@@ -1865,6 +1926,8 @@ async def update_task_metadata_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to update task metadata: {str(e)}")
 
@@ -1925,6 +1988,8 @@ async def get_task_statistics_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get task statistics: {str(e)}")
 
@@ -1984,6 +2049,8 @@ async def extract_dataview_fields_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to extract Dataview fields: {str(e)}")
 
@@ -2041,6 +2108,8 @@ async def search_by_dataview_field_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to search by Dataview field: {str(e)}")
 
@@ -2119,6 +2188,8 @@ async def add_dataview_field_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to add Dataview field: {str(e)}")
 
@@ -2178,6 +2249,8 @@ async def remove_dataview_field_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to remove Dataview field: {str(e)}")
 
@@ -2238,6 +2311,8 @@ async def parse_kanban_board_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to parse Kanban board: {str(e)}")
 
@@ -2319,6 +2394,8 @@ async def add_kanban_card_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to add Kanban card: {str(e)}")
 
@@ -2391,6 +2468,8 @@ async def move_kanban_card_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to move Kanban card: {str(e)}")
 
@@ -2444,6 +2523,8 @@ async def toggle_kanban_card_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to toggle Kanban card: {str(e)}")
 
@@ -2491,6 +2572,8 @@ async def get_kanban_statistics_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get Kanban statistics: {str(e)}")
 
@@ -2534,6 +2617,8 @@ async def get_link_graph_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get link graph: {str(e)}")
 
@@ -2571,6 +2656,8 @@ async def find_orphaned_notes_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to find orphaned notes: {str(e)}")
 
@@ -2617,6 +2704,8 @@ async def find_hub_notes_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to find hub notes: {str(e)}")
 
@@ -2659,6 +2748,8 @@ async def analyze_link_health_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to analyze link health: {str(e)}")
 
@@ -2717,6 +2808,8 @@ async def get_note_connections_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get note connections: {str(e)}")
 
@@ -2770,6 +2863,8 @@ async def execute_dataview_query_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to execute Dataview query: {str(e)}")
 
@@ -2822,6 +2917,8 @@ async def list_notes_by_tag_dql_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list notes by tag: {str(e)}")
 
@@ -2874,6 +2971,8 @@ async def list_notes_by_folder_dql_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list notes by folder: {str(e)}")
 
@@ -2932,6 +3031,8 @@ async def table_query_dql_tool(
 
     except ValueError as e:
         raise create_error(str(e))
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to execute table query: {str(e)}")
 
@@ -2951,6 +3052,8 @@ async def render_templater_template_tool(
     """Render Templater template (requires Obsidian + Templater plugin)."""
     try:
         return await render_templater_template_api_tool(template_file, target_file)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to render template: {str(e)}")
 
@@ -2964,6 +3067,8 @@ async def expand_template_tool(
     """Expand template variables (filesystem-native, offline)."""
     try:
         return await expand_template_fs_tool(template_path, variables, None, vault_path)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to expand template: {str(e)}")
 
@@ -2976,6 +3081,8 @@ async def list_templates_tool(
     """List available templates (filesystem-native, offline)."""
     try:
         return await list_templates_fs_tool(template_folder, vault_path)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list templates: {str(e)}")
 
@@ -2984,6 +3091,8 @@ async def get_active_file_tool(ctx=None):
     """Get currently active file (requires Obsidian running)."""
     try:
         return await get_active_file_api_tool()
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to get active file: {str(e)}")
 
@@ -2996,6 +3105,8 @@ async def open_file_tool(
     """Open file in Obsidian (requires Obsidian running)."""
     try:
         return await open_file_api_tool(file_path, new_pane)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to open file: {str(e)}")
 
@@ -3008,6 +3119,8 @@ async def parse_canvas_tool(
     """Parse Canvas file (filesystem-native, offline)."""
     try:
         return await parse_canvas_fs_tool(file_path, vault_path)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to parse canvas: {str(e)}")
 
@@ -3024,6 +3137,8 @@ async def add_canvas_node_tool(
     """Add node to Canvas (filesystem-native, offline)."""
     try:
         return await add_canvas_node_fs_tool(file_path, node_type, content, x, y, 250, 60, vault_path)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to add canvas node: {str(e)}")
 
@@ -3035,6 +3150,8 @@ async def execute_command_tool(
     """Execute Obsidian command (requires Obsidian running)."""
     try:
         return await execute_command_api_tool(command_id, None)
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to execute command: {str(e)}")
 
@@ -3043,6 +3160,8 @@ async def list_commands_tool(ctx=None):
     """List all available commands (requires Obsidian running)."""
     try:
         return await list_commands_api_tool()
+    except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException, ConnectionError) as e:
+        raise handle_api_error(e)
     except Exception as e:
         raise create_error(f"Failed to list commands: {str(e)}")
 
