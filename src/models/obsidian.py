@@ -91,7 +91,7 @@ class Task(BaseModel):
     done_date: Optional[date] = Field(None, description="Done date (✅ emoji)")
     created_date: Optional[date] = Field(None, description="Created date (➕ emoji)")
     recurrence: Optional[str] = Field(None, description="Recurrence pattern (🔁 emoji)")
-    line_number: int = Field(..., description="Line number in source file")
+    line_number: Optional[int] = Field(None, description="Line number in source file (set after insertion)")
     source_file: str = Field(..., description="Path to file containing task")
     tags: List[str] = Field(default_factory=list, description="Extracted #tags from task")
 
@@ -111,8 +111,8 @@ class Task(BaseModel):
 
     @validator("line_number")
     def validate_line_number(cls, v):
-        """Ensure line number is positive."""
-        if v < 1:
+        """Ensure line number is positive when set."""
+        if v is not None and v < 1:
             raise ValueError("Line number must be positive")
         return v
 
